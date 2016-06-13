@@ -1,28 +1,21 @@
 import akka.actor.ActorSystem
-import akka.io.IO
-import akka.util.Timeout
-import com.zipfworks.sprongo.{ExtendedJsonProtocol, SprongoDSL}
-import reactivemongo.core.nodeset.Authenticate
-import spray.can.Http
-import spray.httpx.SprayJsonSupport
-import spray.routing.{Directives, Route}
-import scala.concurrent.duration._
-import Directives._
-import akka.pattern.ask
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.server.Directives._
+import akka.stream.ActorMaterializer
 
-object Main extends App with SprayJsonSupport with ExtendedJsonProtocol {
+import scala.util.{Failure, Success}
 
-  implicit val timeout = Timeout(5.seconds)
-  implicit val system: ActorSystem = ActorSystem("directory")
+object Main extends App {
 
-  val DB_URLS = Seq("localhost")
-  val DB_AUTH = List(Authenticate("admin", "superman", "12345678"))
-  val DirDB = new DirectoryDriver(DB_URLS, system, DB_AUTH)
+  private implicit val system = ActorSystem()
+  private implicit val materializer = ActorMaterializer()
+  private implicit val executionContext = system.dispatcher
 
-  val routing: Route = get {
-    complete("hello")
-  }
+  private val route = (get & pathEnd & complete){ "Hello World!" }
+  private val _serverBinding = Http().bindAndHandle(route, "localhost", 8080)
 
-  val service = system.actorOf(HttpServiceActor.props(routing))
-  IO(Http) ? Http.Bind(service, interface = "localhost", port = 8080)
+  _serverBinding.andThen({
+    case Success(sb) => system.log.info(s"Binding Successful: ${sb.localAddress}")
+    case Failure(er) => system.log.error(er, "Binding Failure")
+  })
 }
