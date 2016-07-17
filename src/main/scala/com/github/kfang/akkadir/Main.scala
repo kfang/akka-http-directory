@@ -16,7 +16,7 @@ object Main extends App {
   private implicit val executionContext = system.dispatcher
 
   private val route = (get & pathEnd)(complete(HttpEntity(ContentTypes.`text/plain(UTF-8)`, "Hello World!")))
-  private val _serverBinding = Http().bindAndHandle(route, "localhost", 8080)
+  private val _serverBinding = Http().bindAndHandle(route, config.SYSTEM_BINDADDRESS, config.SYSTEM_BINDPORT)
 
   _serverBinding.andThen({
     case Success(sb) => system.log.info(s"Binding Successful: ${sb.localAddress}")
