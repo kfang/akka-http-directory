@@ -13,4 +13,11 @@ case class MainConfig(env: String = sys.env.getOrElse("ENVIRONMENT", "local").to
   val SYSTEM_BINDADDRESS = DIRECTORY_CONFIG.getString("system.bindAddress")
   val SYSTEM_BINDPORT = DIRECTORY_CONFIG.getInt("system.bindPort")
   val SYSTEM_NAME = DIRECTORY_CONFIG.getString("system.name")
+
+  println(
+    s"""
+      |********************************************************************************
+      |MONGOD_NODES: ${MONGO_NODES.mkString(", ")}
+      |********************************************************************************
+    """.stripMargin)
 }
