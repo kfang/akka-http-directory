@@ -3,22 +3,25 @@ package com.github.kfang.akkadir
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
+import com.github.kfang.akkadir.routing.V1Routes
 
-import scala.util.{Failure, Success}
+import scala.concurrent.ExecutionContext
 
 object Main extends App {
 
-  private implicit val config = MainConfig()
-  private val db = MainDBDriver.connect(config)
-  private implicit val system = ActorSystem(config.SYSTEM_NAME, config.CONFIG)
-  private implicit val materializer = ActorMaterializer()
-  private implicit val executionContext = system.dispatcher
+  private val config: MainConfig = MainConfig()
+  private implicit val __system: ActorSystem = ActorSystem(config.SYSTEM_NAME, config.CONFIG)
+  private implicit val __materializer: ActorMaterializer = ActorMaterializer()
+  private implicit val __ctx: ExecutionContext = __system.dispatcher
 
-  private val route = new MainRoutes().routes
-  private val _serverBinding = Http().bindAndHandle(route, config.SYSTEM_BINDADDRESS, config.SYSTEM_BINDPORT)
-
-  _serverBinding.andThen({
-    case Success(sb) => system.log.info(s"Binding Successful: ${sb.localAddress}")
-    case Failure(er) => system.log.error(er, "Binding Failure")
+  (for {
+    db <- MainDBDriver.connect(config)
+    app = AppPackage(db = db, system = __system)
+    routing = new V1Routes(app).routes
+    serverBinding <- Http().bindAndHandle(routing, config.SYSTEM_BINDADDRESS, config.SYSTEM_BINDPORT)
+  } yield {
+    __system.log.info(s"Binding Successful: ${serverBinding.localAddress}")
+  }).recover({
+    case e =>
   })
 }
