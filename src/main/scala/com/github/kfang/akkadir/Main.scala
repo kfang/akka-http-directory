@@ -9,7 +9,7 @@ import scala.util.{Failure, Success}
 object Main extends App {
 
   private implicit val config = MainConfig()
-  private implicit val db = MainDBDriver.connect(config)
+  private val db = MainDBDriver.connect(config)
   private implicit val system = ActorSystem(config.SYSTEM_NAME, config.CONFIG)
   private implicit val materializer = ActorMaterializer()
   private implicit val executionContext = system.dispatcher
