@@ -17,6 +17,7 @@ case class User(
 
 object User {
   implicit val bsf = Macros.handler[User]
+  implicit val jsf = jsonFormat5(User.apply)
 
   val indexes: Seq[Index] = Seq(
     Index(key = Seq("email" -> IndexType.Descending), unique = true),

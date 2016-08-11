@@ -13,4 +13,5 @@ case class Session(
 
 object Session {
   implicit val bsf = Macros.handler[Session]
+  implicit val jsf = jsonFormat2(Session.apply)
 }
