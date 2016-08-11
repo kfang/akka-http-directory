@@ -11,7 +11,7 @@ import spray.json.{DefaultJsonProtocol, JsNumber, JsValue, RootJsonFormat}
 trait JsonBsonHandlers extends DefaultJsonProtocol {
 
   implicit object DateTimeBSONHandler extends BSONHandler[BSONLong, DateTime] {
-    override def write(t: DateTime): BSONDateTime = BSONDateTime(t.getMillis)
+    override def write(t: DateTime): BSONLong = BSONLong(t.getMillis)
     override def read(bson: BSONLong): DateTime = new DateTime(bson.value)
   }
 
