@@ -17,6 +17,9 @@ case class MainConfig(){
   val SYSTEM_BINDPORT = DIRECTORY_CONFIG.getInt("system.bindPort")
   val SYSTEM_NAME = DIRECTORY_CONFIG.getString("system.name")
 
+  val USER_COOKIE_NAME = "dir_sess"
+  val USER_PASSWORD_MIN_LENGTH = 8
+
   println(
     s"""
       |********************************************************************************

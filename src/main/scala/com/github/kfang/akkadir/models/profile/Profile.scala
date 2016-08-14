@@ -4,12 +4,12 @@ import java.util.UUID
 
 import com.github.kfang.akkadir.utils.JsonBsonHandlers._
 import org.joda.time.DateTime
+import reactivemongo.api.indexes.{Index, IndexType}
 import reactivemongo.bson.Macros
 
-//TODO: check if works with chinese
 case class Profile(
   name: ProfileName,
-  email: String,  //TODO: don't strip unless its default.
+  email: String,
   phone: Option[ProfilePhone],
   address: Option[ProfileAddress],
 
@@ -25,4 +25,10 @@ case class Profile(
 object Profile {
   implicit val bsf = Macros.handler[Profile]
   implicit val jsf = jsonFormat10(Profile.apply)
+
+  val indexes: Seq[Index] = Seq(
+    Index(key = Seq("user" -> IndexType.Descending)),
+    Index(key = Seq("organization" -> IndexType.Descending, "name.first" -> IndexType.Descending)),
+    Index(key = Seq("organization" -> IndexType.Descending, "name.last" -> IndexType.Descending))
+  )
 }

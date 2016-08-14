@@ -16,7 +16,7 @@ object Main extends App {
 
   (for {
     db <- MainDBDriver.connect(config)
-    app = AppPackage(db = db, system = __system)
+    app = AppPackage(config = config, db = db, system = __system)
     routing = new V1Routes(app).routes
     serverBinding <- Http().bindAndHandle(routing, config.SYSTEM_BINDADDRESS, config.SYSTEM_BINDPORT)
   } yield {
