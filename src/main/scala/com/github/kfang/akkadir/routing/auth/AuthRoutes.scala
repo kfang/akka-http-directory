@@ -7,14 +7,22 @@ import com.github.kfang.akkadir.utils.AppRoutes
 
 class AuthRoutes(implicit App: AppPackage) extends AppRoutes(App){
 
-  private val registerRoute: Route = (
+  private val register: Route = (
     post &
     path("register") &
     entity(as[AuthRegisterRequest])
-  ){(request) => complete("BLAH")}
+  ){(request) => request.getResponse}
+
+  private val login: Route = (
+    post &
+    path("login")
+  ){complete("")}
+
+
 
   val routes: Route = pathPrefix("auth"){
-    registerRoute             //=> POST /v1/auth/register
+    register ~        //=> POST /v1/auth/register
+    login             //=> POST /v1/auth/login
   }
 
 }
