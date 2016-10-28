@@ -18,7 +18,11 @@ case class User(
   sessions: Option[List[Session]] = None,
   createdOn: DateTime = DateTime.now,
   _id: String = UUID.randomUUID.toString
-)
+){
+  def responseFormat: User = {
+    this.copy(sessions = None)
+  }
+}
 
 
 object User {

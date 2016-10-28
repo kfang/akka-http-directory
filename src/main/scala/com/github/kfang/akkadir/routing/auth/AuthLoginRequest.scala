@@ -1,11 +1,14 @@
 package com.github.kfang.akkadir.routing.auth
 
+import akka.http.scaladsl.model.headers.HttpCookie
 import com.github.kfang.akkadir.AppPackage
+import com.github.kfang.akkadir.models.profile.Profile
 import com.github.kfang.akkadir.models.user.User
 import com.github.kfang.akkadir.utils.{ERROR, Errors}
 import spray.json.DefaultJsonProtocol._
-import spray.json.JsObject
+import spray.json._
 import com.github.t3hnar.bcrypt._
+
 import scala.concurrent.Future
 
 case class AuthLoginRequest(
@@ -25,13 +28,18 @@ object AuthLoginRequest {
       if(isValidPassword) Some(user) else None
     }
 
-    //TODO: finish this, should return profile
-    def getResponse: Future[JsObject] = {
+    def getResponse: Future[(HttpCookie, JsObject)] = {
       User.findByEmailRaw(request.email).map(_.flatMap(verify)).flatMap({
         case None => throw ERROR.badRequest(Errors.BAD_LOGIN)
         case Some(user) => User.login(user).map(_ -> user)
-      }).map({ case (cookie, user) =>
-        JsObject()
+      }).flatMap({ case (cookie, user) =>
+        for {
+          profiles <- Profile.findDefaultForUser(user._id).map(p => List(p).flatten)
+          users = List(user.responseFormat)
+          response = JsObject("users" -> users.toJson, "profiles" -> profiles.toJson)
+        } yield {
+          cookie -> response
+        }
       })
     }
   }
