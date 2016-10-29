@@ -18,8 +18,10 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http-experimental"               % akkaVersion,
   "com.typesafe.akka" %% "akka-http-spray-json-experimental"    % akkaVersion,
   "com.typesafe.akka" %% "akka-slf4j"                           % akkaVersion,
-  "org.reactivemongo" %% "reactivemongo"                        % "0.11.14",
+
   "com.github.t3hnar" %% "scala-bcrypt"                         % "2.6",
+
+  "org.reactivemongo" %% "reactivemongo"                        % "0.11.14",
   "com.beachape"      %% "enumeratum"                           % "1.4.9"
 )
 
