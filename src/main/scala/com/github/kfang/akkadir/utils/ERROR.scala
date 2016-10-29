@@ -30,6 +30,7 @@ object ERROR {
 }
 
 object Errors {
+  val BAD_LOGIN = "bad-login" -> JsString("login credentials invalid")
   val EMAIL_EXISTS = "email-exists" -> JsString("email already exists")
   val EMPTY_STRING = "empty-string" -> JsString("request contains an empty string")
   val INVALID_EMAIL = "invalid-email" -> JsString("email is invalid")

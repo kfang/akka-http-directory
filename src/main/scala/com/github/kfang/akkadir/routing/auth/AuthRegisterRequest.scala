@@ -31,7 +31,7 @@ object AuthRegisterRequest {
     private def validate: Future[Option[ERROR]] = {
       //cleaned email is unique
       val _emailExists = email.map(e => {
-        User.find(e).map(o => if(o.isEmpty) None else Some(Errors.EMAIL_EXISTS))
+        User.findByEmail(e).map(o => if(o.isEmpty) None else Some(Errors.EMAIL_EXISTS))
       }).getOrElse(Future.successful(Some(Errors.INVALID_EMAIL)))
 
       //no empty strings

@@ -15,10 +15,15 @@ case class User(
   email: String,    //needs to be 'cleaned'
   emailRaw: String, //what the user put in, use in profile.
   password: String, //should be bcrypted
-  sessions: List[Session] = Nil,
+  sessions: Option[List[Session]] = None,
   createdOn: DateTime = DateTime.now,
   _id: String = UUID.randomUUID.toString
-)
+){
+  def responseFormat: User = {
+    this.copy(sessions = None)
+  }
+}
+
 
 object User {
   implicit val bsf = Macros.handler[User]
@@ -43,8 +48,22 @@ object User {
   }
 
   /** Retrieves User by 'cleaned' email */
-  def find(email: String)(implicit db: MainDBDriver, ctx: ExecutionContext): Future[Option[User]] = {
-    db.Users.find(BSONDocument("email" -> email)).one[User]
+  def findByEmail(email: String)(implicit db: MainDBDriver, ctx: ExecutionContext): Future[Option[User]] = {
+    cleanEmail(email).map(clean => {
+      db.Users.find(BSONDocument("email" -> clean)).one[User]
+    }).getOrElse(Future.successful(None))
+  }
+
+  /** Retrieves User by 'raw' email */
+  def findByEmailRaw(emailRaw: String)(implicit db: MainDBDriver, ctx: ExecutionContext): Future[Option[User]] = {
+    db.Users.find(BSONDocument("emailRaw" -> emailRaw)).one[User]
+  }
+
+  /** Retrieves User by Session ID */
+  def findBySession(id: String)(implicit db: MainDBDriver, ctx: ExecutionContext): Future[Option[User]] = {
+    db.Users.find(BSONDocument("sessions" -> BSONDocument("$elemMatch" -> BSONDocument(
+      "_id" -> id, "expiresOn" -> BSONDocument("$gt" -> System.currentTimeMillis())
+    )))).one[User]
   }
 
   /** Validates a string against an email regex */
