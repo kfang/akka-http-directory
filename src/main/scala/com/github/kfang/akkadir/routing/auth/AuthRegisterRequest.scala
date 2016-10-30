@@ -15,8 +15,8 @@ case class AuthRegisterRequest(
   email: String,
   password: String,
   name: ProfileName,
-  phone: Option[ProfilePhone],
-  address: Option[ProfileAddress]
+  phone: Option[ProfilePhone] = None,
+  address: Option[ProfileAddress] = None
 )
 
 object AuthRegisterRequest {

@@ -5,7 +5,7 @@ import reactivemongo.bson.Macros
 
 case class ProfileName(
   first: String,
-  middle: Option[String],
+  middle: Option[String] = None,
   last: String
 )
 

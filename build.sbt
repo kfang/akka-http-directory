@@ -21,6 +21,9 @@ libraryDependencies ++= Seq(
 
   "com.github.t3hnar" %% "scala-bcrypt"                         % "2.6",
 
+  "org.scalatest"     %% "scalatest"                            % "3.0.0"       % "test",
+  "com.typesafe.akka" %% "akka-http-testkit"                    % akkaVersion,
+
   "org.reactivemongo" %% "reactivemongo"                        % "0.11.14",
   "com.beachape"      %% "enumeratum"                           % "1.4.9"
 )

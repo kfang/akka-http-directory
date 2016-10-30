@@ -39,9 +39,9 @@ abstract class AppRoutes(App: AppPackage) extends Directives {
     onComplete(f){
       case Success(js: JsValue) => complete(js)
       case Success((c: HttpCookie, js: JsValue)) => setCookie(c)(complete(js))
-      case Success(err: ERROR) => complete(err.getResponse)
+      case Success(err: ERROR) => complete(err.code -> err.getResponse)
       case Success(t) => complete(StatusCodes.InternalServerError -> s"Unknown Type Response: ${t.getClass}")
-      case Failure(err: ERROR) => complete(err.getResponse)
+      case Failure(err: ERROR) => complete(err.code -> err.getResponse)
       case Failure(err: Throwable) => complete(ERROR(err))
     }
   }
