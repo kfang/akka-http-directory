@@ -16,8 +16,9 @@ class OrganizationsRoutes(implicit App: AppPackage) extends AppRoutes(App){
 
   private val readOrganization: Route = (
     get &
-    path(idOrSlug)
-  ){ (slug) => OrganizationReadRequest(slug).getResponse }
+    path(idOrSlug) &
+    requiredAuth
+  ){ (slug, user) => OrganizationReadRequest(slug).getResponse(user) }
 
   override val routes: Route = pathPrefix("organizations"){
     createOrganization ~            //=> POST /v1/organizations

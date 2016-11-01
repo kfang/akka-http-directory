@@ -33,7 +33,8 @@ object Profile {
   val indexes: Seq[Index] = Seq(
     Index(key = Seq("user" -> IndexType.Descending)),
     Index(key = Seq("organization" -> IndexType.Descending, "name.first" -> IndexType.Descending)),
-    Index(key = Seq("organization" -> IndexType.Descending, "name.last" -> IndexType.Descending))
+    Index(key = Seq("organization" -> IndexType.Descending, "name.last" -> IndexType.Descending)),
+    Index(key = Seq("organization" -> IndexType.Descending, "user" -> IndexType.Descending))
   )
 
   /** Find a Profile by User ID */
