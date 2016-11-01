@@ -35,4 +35,5 @@ object Errors {
   val EMPTY_STRING = "empty-string" -> JsString("request contains an empty string")
   val INVALID_EMAIL = "invalid-email" -> JsString("email is invalid")
   val PASSWORD_TOO_SHORT = "pasword-too-short" -> JsString("password is too short")
+  val SLUG_EXISTS = "slug-exists" -> JsString("slug already exists")
 }
