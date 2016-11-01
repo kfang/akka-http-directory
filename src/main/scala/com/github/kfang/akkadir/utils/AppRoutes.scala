@@ -3,7 +3,7 @@ package com.github.kfang.akkadir.utils
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.headers.{HttpCookie, HttpCookiePair}
-import akka.http.scaladsl.server.{Directive1, Directives, Route}
+import akka.http.scaladsl.server._
 import com.github.kfang.akkadir.{AppPackage, MainDBDriver}
 import com.github.kfang.akkadir.models.user.User
 import spray.json.DefaultJsonProtocol._
@@ -18,6 +18,16 @@ abstract class AppRoutes(App: AppPackage) extends Directives {
   private implicit val __ctx: ExecutionContext = App.system.dispatcher
   private implicit val __db: MainDBDriver = App.db
 
+  /**
+    * Custom Route Directives
+    */
+
+  val idOrSlug: PathMatcher1[String] = PathMatcher("[a-z0-9\\-]+".r)
+
+
+  /**
+    * Authentication Directives
+    */
 
   private def getUserDirective(pair: HttpCookiePair): Directive1[User] = {
     onComplete(User.findBySession(pair.value)).flatMap({
@@ -34,6 +44,11 @@ abstract class AppRoutes(App: AppPackage) extends Directives {
       .flatMap(u => provide(Some(u)))
       .recover((_) => provide(None))
   })
+
+
+  /**
+    * Future Routing Marshallers
+    */
 
   implicit def futureToRoute[T](f: Future[T]): Route = {
     onComplete(f){

@@ -6,7 +6,7 @@ import com.github.kfang.akkadir.models.user.User
 import com.github.kfang.akkadir.utils.{ERROR, Errors, SlugUtils}
 import reactivemongo.bson.BSONDocument
 import spray.json.DefaultJsonProtocol._
-import spray.json.JsObject
+import spray.json._
 
 import scala.concurrent.Future
 
@@ -19,6 +19,9 @@ object OrganizationCreateRequest {
   implicit val __jsf = jsonFormat1(OrganizationCreateRequest.apply)
 
   implicit class OrganizationCreate(request: OrganizationCreateRequest)(implicit App: AppPackage){
+
+    private implicit val __ctx = App.system.dispatcher
+    private implicit val __db = App.db
 
     private def validate(user: User): Future[Option[ERROR]] = {
       val _slugExistsError = App.db.Organizations.count(Some(BSONDocument(
@@ -34,14 +37,18 @@ object OrganizationCreateRequest {
     }
 
     private def createOrganization(user: User): Future[JsObject] = {
-      for {
-        insertResult <- App.db.Organizations.insert(Organization(
+      val organization = {
+        Organization(
           name = request.name,
           slug = List(SlugUtils.slugify(request.name)),
           owner = List(user._id)
-        ))
+        )
+      }
+
+      for {
+        insertResult <- App.db.Organizations.insert(organization)
       } yield {
-        JsObject()
+        JsObject("organizations" -> List(organization).toJson)
       }
     }
 
