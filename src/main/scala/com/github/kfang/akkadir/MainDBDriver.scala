@@ -16,6 +16,14 @@ case class MainDBDriver(config: MainConfig, driver: MongoDriver, connection: Mon
   Profile.indexes.foreach(index => Profiles.indexesManager.ensure(index))
   User.indexes.foreach(index => Users.indexesManager.ensure(index))
 
+
+  def reset: Future[Boolean] = {
+    Future.sequence(Seq(
+      Profiles.drop(failIfNotFound = false),
+      Users.drop(failIfNotFound = false)
+    )).map(_ => true)
+  }
+
 }
 
 object MainDBDriver {

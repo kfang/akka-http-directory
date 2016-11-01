@@ -15,9 +15,10 @@ object MainTest {
 
   lazy val _app = for {
     db <- MainDBDriver.connect(config)
+    reset <- db.reset
     app = AppPackage(config = config, db = db, system = __system)
   } yield {
-    println("Connected Main DB")
+    println(s"Connected Main DB, reset: $reset")
     app
   }
 
