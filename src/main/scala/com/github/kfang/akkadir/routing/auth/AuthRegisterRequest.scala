@@ -6,7 +6,7 @@ import com.github.kfang.akkadir.utils.JsonBsonHandlers._
 import com.github.kfang.akkadir.models.profile._
 import com.github.kfang.akkadir.models.user.User
 import com.github.kfang.akkadir.utils.{ERROR, Errors}
-import spray.json.JsObject
+import spray.json._
 
 import scala.concurrent.Future
 import com.github.t3hnar.bcrypt._
@@ -15,8 +15,8 @@ case class AuthRegisterRequest(
   email: String,
   password: String,
   name: ProfileName,
-  phone: Option[ProfilePhone],
-  address: Option[ProfileAddress]
+  phone: Option[ProfilePhone] = None,
+  address: Option[ProfileAddress] = None
 )
 
 object AuthRegisterRequest {
@@ -98,7 +98,7 @@ object AuthRegisterRequest {
         profileInsert <- App.db.Profiles.insert(defaultProfile)
         cookie <- User.login(user)
       } yield {
-        cookie -> JsObject()
+        cookie -> JsObject("users" -> List(user).toJson, "profiles" -> List(defaultProfile).toJson)
       }
     }
 

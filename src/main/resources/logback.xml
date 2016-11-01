@@ -14,7 +14,7 @@
         </encoder>
     </appender>
 
-    <logger name="reactivemongo" additivity="false">
+    <logger name="reactivemongo" additivity="true" level="info">
         <appender-ref ref="MONGO_FILE" />
     </logger>
 
