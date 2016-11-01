@@ -1,5 +1,6 @@
 package com.github.kfang.akkadir
 
+import com.github.kfang.akkadir.models.organization.Organization
 import com.github.kfang.akkadir.models.profile.Profile
 import com.github.kfang.akkadir.models.user.User
 import reactivemongo.api._
@@ -11,8 +12,10 @@ import scala.concurrent.{ExecutionContext, Future}
 case class MainDBDriver(config: MainConfig, driver: MongoDriver, connection: MongoConnection, defaultDB: DefaultDB) {
   private implicit val __ctx: ExecutionContext = driver.system.dispatcher
 
+  val Organizations: BSONCollection = defaultDB("organizations")
   val Profiles: BSONCollection = defaultDB("profiles")
   val Users: BSONCollection = defaultDB("users")
+  Organization.indexes.foreach(index => Organizations.indexesManager.ensure(index))
   Profile.indexes.foreach(index => Profiles.indexesManager.ensure(index))
   User.indexes.foreach(index => Users.indexesManager.ensure(index))
 

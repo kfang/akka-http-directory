@@ -30,9 +30,13 @@ object ERROR {
 }
 
 object Errors {
+
   val BAD_LOGIN = "bad-login" -> JsString("login credentials invalid")
   val EMAIL_EXISTS = "email-exists" -> JsString("email already exists")
   val EMPTY_STRING = "empty-string" -> JsString("request contains an empty string")
   val INVALID_EMAIL = "invalid-email" -> JsString("email is invalid")
+  val ORGANIZATION_NOT_FOUND = "organization-not-found" -> JsString("organizaiton was not found")
   val PASSWORD_TOO_SHORT = "pasword-too-short" -> JsString("password is too short")
+  val SLUG_EXISTS = "slug-exists" -> JsString("slug already exists")
+  val USER_NOT_IN_ORGANIZATION = "user-not-in-organization" -> JsString("user is not in this organization")
 }

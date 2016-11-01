@@ -86,6 +86,19 @@ object User {
     db.Users.update(sel, upd).map(wr => cookie)
   }
 
+  /**
+    * Determines whether a user is part of an organization.
+    * - needs to have a Profile in the Organization
+    * @param user           ID of the user to check
+    * @param organization   ID of the organization
+    * @param db             MainDBDriver
+    * @param ctx            ExecutionContext
+    * @return               true if user is in the organization, false otherwise
+    */
+  def isPartOfOrganization(user: String, organization: String)(implicit db: MainDBDriver, ctx: ExecutionContext): Future[Boolean] = {
+    db.Profiles.count(Some(BSONDocument("organization" -> organization, "user" -> user))).map(_ > 0)
+  }
+
 }
 
 

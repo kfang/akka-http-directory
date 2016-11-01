@@ -29,16 +29,17 @@ object Profile {
   implicit val bsf = Macros.handler[Profile]
   implicit val jsf = jsonFormat10(Profile.apply)
 
+  /** MongoDB Indexes */
   val indexes: Seq[Index] = Seq(
     Index(key = Seq("user" -> IndexType.Descending)),
     Index(key = Seq("organization" -> IndexType.Descending, "name.first" -> IndexType.Descending)),
-    Index(key = Seq("organization" -> IndexType.Descending, "name.last" -> IndexType.Descending))
+    Index(key = Seq("organization" -> IndexType.Descending, "name.last" -> IndexType.Descending)),
+    Index(key = Seq("organization" -> IndexType.Descending, "user" -> IndexType.Descending))
   )
 
   /** Find a Profile by User ID */
   def findDefaultForUser(user: String)(implicit db: MainDBDriver, ctx: ExecutionContext): Future[Option[Profile]] = {
     db.Profiles.find(BSONDocument("user" -> user, "flags" -> ProfileFlag.Default.bson)).one[Profile]
   }
-
 
 }
